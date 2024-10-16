@@ -29,8 +29,7 @@ Folder path: abfss://raw@some_account_name.dfs.core.windows.net/DummyFolder
 #### 2.2 Reading and Exploding JSON Files
 Next, the notebook reads each file and processes its contents. This involves exploding any nested arrays and adding additional metadata, such as the user and date_added.
 
-python
-Copy code
+```python 
 for file in files:
     temp_df = (spark.read
                .option("multiline", "true")
@@ -39,6 +38,7 @@ for file in files:
                .withColumn("explodedArray", explode(col('results')))
                .withColumn("user", lit(file.name.split('.')[0]))
                .withColumn("date_added", current_timestamp()))
+```
 Explanation:
 spark.read: Reads the files in JSON format.
 option("multiline", "true"): Ensures that multi-line JSON files are read correctly.
