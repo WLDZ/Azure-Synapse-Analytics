@@ -5,9 +5,9 @@ This document explains the process of loading data into dimension and fact table
 ### 1. Environment Setup
 The notebook begins by setting up the Spark environment. This involves defining the Spark pool that provides the required computational resources.
 
-python
-Copy code
+```python 
 spark_pool = 'MySparkPool'
+``` 
 Explanation:
 This line specifies the name of the Spark pool as MySparkPool. The resources for running the Spark jobs will be drawn from this pool.
 ### 2. Loading and Processing JSON Files
@@ -40,11 +40,11 @@ for file in files:
                .withColumn("date_added", current_timestamp()))
 ```
 Explanation:
-spark.read: Reads the files in JSON format.
-option("multiline", "true"): Ensures that multi-line JSON files are read correctly.
-explode(col('results')): Breaks down the nested results array in each file into individual rows.
-withColumn("user", lit(file.name.split('.')[0])): Adds a new column user using the filename (before the extension).
-withColumn("date_added", current_timestamp()): Adds a column for the current timestamp when the data is added.
+spark.read: Reads the files in JSON format. <br>
+option("multiline", "true"): Ensures that multi-line JSON files are read correctly. <br>
+explode(col('results')): Breaks down the nested results array in each file into individual rows.  <br>
+withColumn("user", lit(file.name.split('.')[0])): Adds a new column user using the filename (before the extension). <br>
+withColumn("date_added", current_timestamp()): Adds a column for the current timestamp when the data is added. <br>
 This step transforms the data into a format suitable for insertion into the target tables.
 
 
