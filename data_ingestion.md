@@ -140,6 +140,8 @@ The pipeline is designed to securely extract theme and set data from the Rebrick
 
 3. **Data Storage:**
    - Both the themes and sets data are stored in Azure Blob Storage in JSON format, making the data available for further analysis or processing.
+  
+    ![Pipeline](images/synapse.png)
 
 ---
 
