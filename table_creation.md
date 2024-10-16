@@ -39,3 +39,28 @@ CREATE TABLE lego.Rebrickable_Profile_Dimention
     Date_added date
 )
 USING DELTA;
+
+## Owned_Sets_Fact
+
+### Purpose
+The Owned_Sets_Fact table records factual data regarding sets owned by users, including pricing information. This table links users with their owned LEGO sets.
+
+### Structure
+| Column Name     | Data Type       | Constraints     | Description                                      |
+|------------------|------------------|------------------|--------------------------------------------------|
+| Owned_Fact_ID    | BIGINT           | NOT NULL         | Unique identifier for each owned fact entry.     |
+| Set_ID           | VARCHAR(128)     | NOT NULL         | Unique identifier for the set owned.             |
+| User_ID          | BIGINT           | NOT NULL         | Unique identifier for each user.                 |
+| Price            | DECIMAL(19,4)    |                  | Price of the owned LEGO set.                      |
+
+### SQL Code
+```sql
+CREATE TABLE lego.Owned_Sets_Fact
+(
+    Owned_Fact_ID BIGINT NOT NULL,
+    Set_ID varchar(128) NOT NULL,
+    User_ID BIGINT NOT NULL,
+    Price DECIMAL(19,4)
+)
+USING DELTA;
+
