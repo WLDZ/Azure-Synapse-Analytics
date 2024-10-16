@@ -85,6 +85,17 @@ Dummy Information:
 
 Table: Lego_Sets_Dimension
 Columns: SetNumber, Set_Dim_Key
+
+The following images show the populated data in the Lego_Sets_Dimension. The second image clearly displays the name of each theme, which is fetched from the themes dataset. <br>
+
+![sets](images/sets.png)
+
+<br>
+
+![sets2](images/sets.png)
+
+<br>
+
 ##### 3.1.2 Inserting into Lego_Users_Dimension
 The Lego_Users_Dimension table stores user-related information. This SQL query merges user data into the dimension table:
 
@@ -126,13 +137,19 @@ Dummy Information:
 
 Table: Lego_Date_Dimension
 Columns: Date_ID, Date_Dim_Key
-#### 3.2 Inserting into the Fact Table: Lego_Sets_Fact
+
+The following images show the populated data in the Lego_Date_Dimension.
+<br>
+![date_dimension](images/date_dimension.png)
+<br>
+
+#### 3.2 Inserting into the Fact Table: Owned_Sets_Fact
 The fact table stores transactional data about Lego sets, linking users, sets, and dates. The code inserts new records into this table:
 
 ```
 spark.sql("""
-    INSERT INTO Lego.Lego_Sets_Fact (SetNumber, User_ID, Date_ID, Price)
-    SELECT SetNumber, User_ID, Date_ID, Price
+    INSERT INTO Lego.Owned_Sets_Fact (Owned_Fact_ID,Set_ID, User_ID, Date_ID, Price)
+    SELECT Owned_Fact_ID,Set_ID, User_ID, Date_ID, Price
     FROM source_data
 """)
 ```
@@ -141,8 +158,13 @@ INSERT INTO: Inserts new records into the fact table.
 The SELECT statement retrieves the necessary fields (SetNumber, User_ID, Date_ID, Price) from the source_data temp view.
 Dummy Information:
 
-Fact Table: Lego_Sets_Fact
-Columns: SetNumber, User_ID, Date_ID, Price
+Fact Table: Owned_Sets_Fact
+Columns: Owned_Fact_ID,Set_ID, User_ID, Date_ID, Price
+
+<br>
+![fact](images/fact.png)
+<br>
+
 ### 4. Use of createOrReplaceTempView
 The function createOrReplaceTempView allows a DataFrame to be registered as a temporary SQL view, making it accessible via SQL queries. In the code, this is used to enable SQL-based operations on the DataFrame data.
 
