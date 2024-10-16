@@ -50,6 +50,7 @@ The Owned_Sets_Fact table records factual data regarding sets owned by users, in
 |------------------|------------------|------------------|--------------------------------------------------|
 | Owned_Fact_ID    | BIGINT           | NOT NULL         | Unique identifier for each owned fact entry.     |
 | Set_ID           | VARCHAR(128)     | NOT NULL         | Unique identifier for the set owned.             |
+| Date_ID          |INT               | NOT NULL         | Unique identifier for the Date.                  |
 | User_ID          | BIGINT           | NOT NULL         | Unique identifier for each user.                 |
 | Price            | DECIMAL(19,4)    |                  | Price of the owned LEGO set.                      |
 
@@ -59,6 +60,7 @@ CREATE TABLE lego.Owned_Sets_Fact
 (
     Owned_Fact_ID BIGINT NOT NULL,
     Set_ID varchar(128) NOT NULL,
+    Date_ID INT NOT NULL,
     User_ID BIGINT NOT NULL,
     Price DECIMAL(19,4)
 )
