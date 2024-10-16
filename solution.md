@@ -142,6 +142,7 @@ Columns: Date_ID, Date_Dim_Key
 The following images show the populated data in the Lego_Date_Dimension.
 
 <br>
+
 ![date_dimension](images/date_dimension.png)
 <br>
 
