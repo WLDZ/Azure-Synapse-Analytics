@@ -91,8 +91,9 @@ The following images show the populated data in the Lego_Sets_Dimension. The sec
 ![sets](images/sets.png)
 
 <br>
+<br>
 
-![sets2](images/sets.png)
+![sets2](images/set2.png)
 
 <br>
 
@@ -139,6 +140,7 @@ Table: Lego_Date_Dimension
 Columns: Date_ID, Date_Dim_Key
 
 The following images show the populated data in the Lego_Date_Dimension.
+
 <br>
 ![date_dimension](images/date_dimension.png)
 <br>
@@ -162,7 +164,9 @@ Fact Table: Owned_Sets_Fact
 Columns: Owned_Fact_ID,Set_ID, User_ID, Date_ID, Price
 
 <br>
+
 ![fact](images/fact.png)
+
 <br>
 
 ### 4. Use of createOrReplaceTempView
