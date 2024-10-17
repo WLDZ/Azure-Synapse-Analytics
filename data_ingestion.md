@@ -38,12 +38,7 @@ The following image shows the overall structure of the final data ingestion pipe
 
    ![Pipeline](images/synapse.png)
 
-
-- **Pipeline Name:** `Ingest`
-- **Type:** `Microsoft.Synapse/workspaces/pipelines`
-- **Last Published:** `2024-10-13`
-
-The pipeline is designed to securely extract theme and set data from the Rebrickable API and store it in Azure Blob Storage in JSON format. It fetches the necessary credentials from Azure Key Vault and handles data ingestion through a series of REST API calls.
+The pipeline is designed to securely extract theme and set data from the Rebrickable API and store it in Azure Datalake in JSON format. It fetches the necessary credentials from **Azure Key Vault** and handles data ingestion through a series of REST API calls.
 
 ---
 
