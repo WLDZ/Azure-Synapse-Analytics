@@ -1,4 +1,5 @@
-# Explanation of Data Load Process in Dimension and Fact Tables
+# Data Load Process in Dimension and Fact Tables
+
 ## Introduction
 This document explains the process of loading data into dimension and fact tables in a data warehouse using Spark with PySpark and Azure Synapse. The notebook utilizes various Spark transformations and SQL commands to merge, read, and process data from JSON files into relevant tables. The approach ensures that the data is effectively handled for analytics purposes.
 
@@ -208,3 +209,6 @@ The final structure of the dimensional and fact tables is shown in the image bel
 
 ### 7. Conclusion
 This notebook automates the process of loading, merging, and inserting data into dimension and fact tables using PySpark and SQL in an Azure Synapse environment. The dimension tables are populated to cater to SC 1, ensuring that reference data is available to support the fact table. This process guarantees data consistency and efficient loading from the raw files stored in an Azure Data Lake to the appropriate data warehouse tables.
+
+**[Infromation on Warehouse Creation](./table_creation.md)**
+
