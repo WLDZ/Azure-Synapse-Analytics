@@ -2,7 +2,7 @@
 
 ## Table of Contents
 
-1. [Overview](#Overview)  
+1. [Introduction](#Introduction)  
 2. [Pipeline Overview](#pipeline-overview)  
    2.0 - [Pipeline Steps](#pipeline-steps)  
    2.1 - [Retrieve API Key (Get Key)](#21-retrieve-api-key-get-key)  
@@ -27,7 +27,7 @@
 
 ---
 
-# Introduction
+# 1. Introduction
 
 
 This document presents a structured solution for managing data workflows from the Rebrickable website to an Azure Data Lake, encompassing three key components. The first phase, **data ingestion**, focuses on securely extracting theme and set data from the Rebrickable API and storing it in the raw layer of the Azure Data Lake in JSON format. To ensure secure access, credentials for the API are managed using Azure Key Vault, which enhances the security of sensitive information throughout the ingestion process.
@@ -132,12 +132,12 @@ The pipeline is built to securely extract themes and sets data from the Rebricka
 
 ---
 
-# Data Load Process in Dimension and Fact Tables
+# 3 Data Load Process in Dimension and Fact Tables
 
 ## Introduction
 This section explains the process of loading data into dimension and fact tables in a data warehouse using Spark with PySpark and Azure Synapse. The notebook utilizes various Spark transformations and SQL commands to merge, read, and process data from JSON files into relevant tables. The approach ensures that the data is effectively handled for analytics purposes.
 
-### 1. Environment Setup
+### 3.1 Environment Setup
 The notebook begins by setting up the Spark environment. This involves defining the Spark pool that provides the required computational resources.
 
 ```python 
@@ -145,10 +145,10 @@ spark_pool = 'MySparkPool'
 ``` 
 Explanation:
 - This line specifies the name of the Spark pool as MySparkPool. The resources for running the Spark jobs will be drawn from this pool.
-### 2. Loading and Processing JSON Files
+### 3.2 Loading and Processing JSON Files
 The notebook retrieves JSON files from an Azure Data Lake storage location. These files are then processed and prepared for insertion into dimension and fact tables.
 
-#### 2.1 Listing Files in the Azure Data Lake Folder
+#### 3.2.1 Listing Files in the Azure Data Lake Folder
 First, the code lists all the files in a specified folder of the Azure Data Lake using mssparkutils.fs.ls.
 
 ```python 
@@ -159,7 +159,7 @@ Explanation:
 - The path "abfss://raw@adlg2dev.dfs.core.windows.net/SomeFolder" specifies the storage location.
 - Dummy Information: Folder path: abfss://raw@some_account_name.dfs.core.windows.net/DummyFolder
 
-#### 2.2 Reading and Exploding JSON Files
+#### 3.2.2 Reading and Exploding JSON Files
 Next, the notebook reads each file and processes its contents. This involves exploding any nested arrays and adding additional metadata, such as the user and date_added.
 
 ```python 
@@ -181,7 +181,7 @@ Explanation:
 - This step transforms the data into a format suitable for insertion into the target tables.
 
 
-#### 2.3 Creating a Temporary View for SQL Queries
+#### 3.2.3 Creating a Temporary View for SQL Queries
 After processing the data into a DataFrame, the notebook creates a temporary view of the data. This allows the data to be accessed using SQL.
 
 ```python 
@@ -189,13 +189,13 @@ temp_df.createOrReplaceTempView("source_data")
 ``` 
 Explanation:
 - createOrReplaceTempView("source_data"): Registers the DataFrame temp_df as a temporary SQL view called source_data. This makes the data available for querying using SQL commands.
-### 3. Data Insertion into Dimension and Fact Tables
+### 4. Data Insertion into Dimension and Fact Tables
 Once the data is ready, it is inserted into dimension and fact tables. This involves using the MERGE INTO statement to update existing records or insert new ones.
 
-#### 3.1 Dimension Tables
+#### 4.1 Dimension Tables
 The dimension tables store reference data to support the fact table. The code performs upserts (merge operations) into various dimension tables, ensuring they are populated to cater to **SC 1**.
 
-##### 3.1.1 Inserting into Lego_Sets_Dimension
+##### 4.1.1 Inserting into Lego_Sets_Dimension
 The Lego_Sets_Dimension table stores information about Lego sets. The following SQL query merges data into this dimension table:
 
 ```python 
@@ -227,7 +227,7 @@ The following images show the populated data in the Lego_Sets_Dimension. The sec
 
 <br>
 
-##### 3.1.2 Inserting into Rebrickable_Profile_Dimension
+##### 4.1.2 Inserting into Rebrickable_Profile_Dimension
 The Rebrickable_Profile_Dimension table stores information about user profiles and their associated LEGO sets.
 
 ```python 
@@ -255,7 +255,7 @@ Columns: User_ID, List_ID, Set_Name, Set_Num, Date_Added
 
 <br>
 
-##### 3.1.3 Inserting into Lego_Date_Dimension
+##### 4.1.3 Inserting into Lego_Date_Dimension
 The Lego_Date_Dimension table stores date-related information, typically used to track transactions in the fact table.
 ```python 
 spark.sql("""
@@ -279,7 +279,7 @@ Explanation:
 
 <br>
 
-#### 3.2 Inserting into the Fact Table: Owned_Sets_Fact
+#### 4.2 Inserting into the Fact Table: Owned_Sets_Fact
 The fact table stores transactional data about Lego sets, linking users, sets, and dates. The code inserts new records into this table:
 
 ```
@@ -299,7 +299,7 @@ Explanation:
 
 <br>
 
-### 4. Use of createOrReplaceTempView
+### 5. Use of createOrReplaceTempView
 The function createOrReplaceTempView allows a DataFrame to be registered as a temporary SQL view, making it accessible via SQL queries. In the code, this is used to enable SQL-based operations on the DataFrame data.
 
 ```python 
@@ -307,7 +307,7 @@ temp_df.createOrReplaceTempView("source_data")
 ```
 Explanation:
 createOrReplaceTempView creates a temporary view called source_data from the DataFrame temp_df. This enables the data to be queried directly using SQL, such as in the fact table insertion described above.
-### 5. Data Validation Using SQL Queries
+### 6. Data Validation Using SQL Queries
 After data insertion, validation queries are run to verify the data was successfully loaded into the **Fact** table.
 
 ```python
@@ -322,7 +322,7 @@ Explanation:
 
 <br>
 
-### 6. Register the Tables in a Catalog:
+### 7. Register the Tables in a Catalog:
 Azure Synapse Analytics was used to register the tables in a catalog. This allows SQL queries to be executed using table names without needing to reference the file paths directly, simplifying data access and query execution. The following image shows how all the tables look after being registered in the catalog.
 
 
@@ -332,7 +332,7 @@ Azure Synapse Analytics was used to register the tables in a catalog. This allow
 
 <br>
 
-### 7. Final Structure of tables in Data Lake
+### 8. Final Structure of tables in Data Lake
 The final structure of the dimensional and fact tables is shown in the image below. This structure has been kept simple, as it utilizes Delta format underneath, which facilitates efficient data management and query performance.
 
 <br>
@@ -341,7 +341,7 @@ The final structure of the dimensional and fact tables is shown in the image bel
 
 <br>
 
-### 7. Conclusion
+### 9. Conclusion
 This notebook automates the process of loading, merging, and inserting data into dimension and fact tables using PySpark and SQL in an Azure Synapse environment. The dimension tables are populated to cater to SC 1, ensuring that reference data is available to support the fact table. This process guarantees data consistency and efficient loading from the raw files stored in an Azure Data Lake to the appropriate data warehouse tables.
 
 **[Infromation on Warehouse Creation](./table_creation.md)**
