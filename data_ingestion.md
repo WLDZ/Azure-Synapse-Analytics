@@ -34,6 +34,11 @@ The final part involves loading the raw data from the data lake, performing tran
 
 ## Pipeline Overview
 
+The following image shows the overall structure of the final data ingestion pipeline. <br>
+
+   ![Pipeline](images/synapse.png)
+
+
 - **Pipeline Name:** `Ingest`
 - **Type:** `Microsoft.Synapse/workspaces/pipelines`
 - **Last Published:** `2024-10-13`
@@ -159,9 +164,6 @@ The pipeline is designed to securely extract theme and set data from the Rebrick
 3. **Data Storage:**
    - Both the themes and sets data are stored in Azure Blob Storage in JSON format, making the data available for further analysis or processing.
 
-The following image shows the overall structure of the final data ingestion pipeline. <br>
-
-   ![Pipeline](images/synapse.png)
 
 **In the same way, the detials of user profile were fecthed by using the user endpoints provided by Rebrickable api.**
 
