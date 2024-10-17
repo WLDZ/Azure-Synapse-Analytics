@@ -11,7 +11,19 @@
    2.4 - [Download Themes Data (Download Themes Data)](#24-download-themes-data)  
    2.5 - [Download Sets Data (Download Sets Data)](#25-download-sets-data)  
    2.6 - [Security Considerations](#26-security-considerations)  
-3. [Execution Flow](#execution-flow)
+3. [Data Load Process in Dimension and Fact Tables](#data-load-process-in-dimension-and-fact-tables)  
+   3.1 - [Environment Setup](#31-environment-setup)  
+   3.2 - [Loading and Processing JSON Files](#32-loading-and-processing-json-files)  
+   3.3 - [Data Insertion into Dimension and Fact Tables](#33-data-insertion-into-dimension-and-fact-tables)  
+   3.3.1 - [Inserting into Lego_Sets_Dimension](#331-inserting-into-lego_sets_dimension)  
+   3.3.2 - [Inserting into Rebrickable_Profile_Dimension](#332-inserting-into-rebrickable_profile_dimension)  
+   3.3.3 - [Inserting into Lego_Date_Dimension](#333-inserting-into-lego_date_dimension)  
+   3.4 - [Inserting into the Fact Table: Owned_Sets_Fact](#34-inserting-into-the-fact-table-owned_sets_fact)  
+   3.5 - [Use of createOrReplaceTempView](#35-use-of-createorreplacetempview)  
+   3.6 - [Data Validation Using SQL Queries](#36-data-validation-using-sql-queries)  
+   3.7 - [Register the Tables in a Catalog](#37-register-the-tables-in-a-catalog)  
+   3.8 - [Final Structure of Tables in Data Lake](#38-final-structure-of-tables-in-data-lake)  
+   3.9 - [Conclusion](#39-conclusion)
 
 ---
 
