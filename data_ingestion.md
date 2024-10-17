@@ -18,7 +18,13 @@
       - 3.2.2 - [Reading and Exploding JSON Files](#322-reading-and-exploding-json-files)  
 
    3.3 - [Creating a Temporary View for SQL Queries](#33-creating-a-temporary-view-for-sql-queries)  
-   3.4 - [Inserting into the Fact Table: Owned_Sets_Fact](#34-data-insertion-into-dimension-and-fact-tables)  
+   3.4 - [Inserting into the Fact Table: Owned_Sets_Fact](#34-data-insertion-into-dimension-and-fact-tables)
+      - 3.4.1 - [Dimension Tables](#341-dimension-tables)
+      - 3.4.2 - [Inserting into Lego_Sets_Dimension](342-inserting-into-lego_sets_dimension)
+      - 3.4.3 - [Inserting into Lego_Sets_Dimension](#343-inserting-into-rebrickable_profile_dimension)
+      - 3.4.4 - [Inserting into Lego_Date_Dimension](#344-inserting-into-lego_date_dimension)
+      - 3.4.5 - [Inserting into the Fact Table: Owned_Sets_Fact](#345-inserting-into-the-fact-table-owned_sets_fact)
+   
    3.5 - [Use of createOrReplaceTempView](#35-use-of-createorreplacetempview)  
    3.6 - [Data Validation Using SQL Queries](#36-data-validation-using-sql-queries)  
    3.7 - [Register the Tables in a Catalog](#37-register-the-tables-in-a-catalog)  
