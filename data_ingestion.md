@@ -138,7 +138,7 @@ The pipeline is built to securely extract themes and sets data from the Rebricka
 ## Introduction
 This section explains the process of loading data into dimension and fact tables in a data warehouse using Spark with PySpark and Azure Synapse. The notebook utilizes various Spark transformations and SQL commands to merge, read, and process data from JSON files into relevant tables. The approach ensures that the data is effectively handled for analytics purposes.
 
-### 3.1. Environment Setup
+### 3.1 Environment Setup
 The notebook begins by setting up the Spark environment. This involves defining the Spark pool that provides the required computational resources.
 
 ```python 
