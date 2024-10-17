@@ -16,6 +16,7 @@
    3.2 - [Loading and Processing JSON Files](#32-loading-and-processing-json-files)
       - 3.2.1 - [Listing Files in the Azure Data Lake Folder](#321-listing-files-in-the-azure-data-lake-folder)
       - 3.2.2 - [Reading and Exploding JSON Files](#322-reading-and-exploding-json-files)  
+
    3.3 - [Creating a Temporary View for SQL Queries](#33-creating-a-temporary-view-for-sql-queries)  
    3.4 - [Inserting into the Fact Table: Owned_Sets_Fact](#34-data-insertion-into-dimension-and-fact-tables)  
    3.5 - [Use of createOrReplaceTempView](#35-use-of-createorreplacetempview)  
