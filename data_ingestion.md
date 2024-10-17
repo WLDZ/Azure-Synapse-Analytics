@@ -2,7 +2,7 @@
 
 ## Table of Contents
 
-1. [Introduction](#Introduction)  
+1. [Introduction](#introduction)  
 2. [Pipeline Overview](#pipeline-overview)  
    2.0 - [Pipeline Steps](#pipeline-steps)  
    2.1 - [Retrieve API Key (Get Key)](#21-retrieve-api-key-get-key)  
@@ -24,6 +24,7 @@
    3.7 - [Register the Tables in a Catalog](#37-register-the-tables-in-a-catalog)  
    3.8 - [Final Structure of Tables in Data Lake](#38-final-structure-of-tables-in-data-lake)  
    3.9 - [Conclusion](#39-conclusion)
+
 
 ---
 
