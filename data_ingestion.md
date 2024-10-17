@@ -4,8 +4,8 @@
 
 1. [Solution](#solution)  
 2. [Pipeline Overview](#pipeline-overview)  
-.  2.0 -[Pipeline Steps](#pipeline-steps)  
-     2.1 - [Retrieve API Key (Get Key)](#1-retrieve-api-key-get-key)  
+      2.0 -[Pipeline Steps](#pipeline-steps)  
+      2.1 - [Retrieve API Key (Get Key)](#1-retrieve-api-key-get-key)  
       2.2 - [Retrieve API Username (Get User Name from Vault)](#2-retrieve-api-username-get-user-name-from-vault)  
       2.3 - [Retrieve API Password (Get Password from Vault)](#3-retrieve-api-password-get-password-from-vault)  
       2.4 - [Download Themes Data (Download Themes Data)](#4-download-themes-data)  
