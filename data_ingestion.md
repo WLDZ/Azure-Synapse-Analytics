@@ -28,6 +28,9 @@ In this phase, we design and create the structure of the data warehouse where th
 The final part involves loading the raw data from the data lake, performing transformations to clean, enrich, and structure the data according to business requirements. This transformed data is then loaded into the curated layer of the data lake. The curated layer serves as the final repository from which data can be accessed and served to meet business needs. Following is the link to the final activity of the whole process. <br>
 [Solution](./solution.md)
 
+---
+<br>
+<br>
 
 ## Pipeline Overview
 
