@@ -11,8 +11,8 @@
    2.4 - [Download Themes Data (Download Themes Data)](#24-download-themes-data)  
    2.5 - [Download Sets Data (Download Sets Data)](#25-download-sets-data)  
    2.6 - [Security Considerations](#26-security-considerations)  
-3. [Data Load Process in Dimension and Fact Tables](#data-load-process-in-dimension-and-fact-tables)  
-   3.1 - [Environment Setup](#3.1.-environment-setup)  
+3. [Data Load Process in Dimension and Fact Tables](#3-data-load-process-in-dimension-and-fact-tables)  
+   3.1 - [Environment Setup](#3.1-environment-setup)  
    3.2 - [Loading and Processing JSON Files](#32-loading-and-processing-json-files)  
    3.3 - [Data Insertion into Dimension and Fact Tables](#33-data-insertion-into-dimension-and-fact-tables)  
    3.3.1 - [Inserting into Lego_Sets_Dimension](#331-inserting-into-lego_sets_dimension)  
@@ -133,7 +133,7 @@ The pipeline is built to securely extract themes and sets data from the Rebricka
 
 ---
 
-# 3. Data Load Process in Dimension and Fact Tables
+# 3 Data Load Process in Dimension and Fact Tables
 
 ## Introduction
 This section explains the process of loading data into dimension and fact tables in a data warehouse using Spark with PySpark and Azure Synapse. The notebook utilizes various Spark transformations and SQL commands to merge, read, and process data from JSON files into relevant tables. The approach ensures that the data is effectively handled for analytics purposes.
