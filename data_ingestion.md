@@ -4,14 +4,14 @@
 
 1. [Solution](#solution)  
 2. [Pipeline Overview](#pipeline-overview)  
-      2.0 -[Pipeline Steps](#pipeline-steps)  
-      2.1 - [Retrieve API Key (Get Key)](#1-retrieve-api-key-get-key)  
-      2.2 - [Retrieve API Username (Get User Name from Vault)](#2-retrieve-api-username-get-user-name-from-vault)  
-      2.3 - [Retrieve API Password (Get Password from Vault)](#3-retrieve-api-password-get-password-from-vault)  
-      2.4 - [Download Themes Data (Download Themes Data)](#4-download-themes-data)  
-      2.5 - [Download Sets Data (Download Sets Data)](#5-download-sets-data)  
-      2.6 - [Security Considerations](#security-considerations)  
-2. [Execution Flow](#execution-flow)
+   2.0 - [Pipeline Steps](#pipeline-steps)  
+   2.1 - [Retrieve API Key (Get Key)](#21-retrieve-api-key-get-key)  
+   2.2 - [Retrieve API Username (Get User Name from Vault)](#22-retrieve-api-username-get-user-name-from-vault)  
+   2.3 - [Retrieve API Password (Get Password from Vault)](#23-retrieve-api-password-get-password-from-vault)  
+   2.4 - [Download Themes Data (Download Themes Data)](#24-download-themes-data)  
+   2.5 - [Download Sets Data (Download Sets Data)](#25-download-sets-data)  
+   2.6 - [Security Considerations](#26-security-considerations)  
+3. [Execution Flow](#execution-flow)
 
 ---
 
@@ -43,9 +43,9 @@ The pipeline is built to securely extract themes and sets data from the Rebricka
 
 ---
 
-## Pipeline Steps
+### 2.0 - Pipeline Steps
 
-### 1. Retrieve API Key (Get Key)
+#### 2.1 - Retrieve API Key (Get Key)
 
 - **Activity Type:** Web Activity  
 - **Description:** Fetches the API key from Azure Key Vault to authenticate API requests.  
@@ -56,7 +56,7 @@ The pipeline is built to securely extract themes and sets data from the Rebricka
   - **Timeout:** 12 hours  
   - **Retries:** 0 retries, 30-second retry interval
 
-### 2. Retrieve API Username (Get User Name from Vault)
+#### 2.2 - Retrieve API Username (Get User Name from Vault)
 
 - **Activity Type:** Web Activity  
 - **Description:** Fetches the API username from Azure Key Vault.  
@@ -68,7 +68,7 @@ The pipeline is built to securely extract themes and sets data from the Rebricka
   - **Timeout:** 12 hours  
   - **Retries:** 0 retries, 30-second retry interval
 
-### 3. Retrieve API Password (Get Password from Vault)
+#### 2.3 - Retrieve API Password (Get Password from Vault)
 
 - **Activity Type:** Web Activity  
 - **Description:** Fetches the API password from Azure Key Vault.  
@@ -80,7 +80,7 @@ The pipeline is built to securely extract themes and sets data from the Rebricka
   - **Timeout:** 12 hours  
   - **Retries:** 0 retries, 30-second retry interval
 
-### 4. Download Themes Data (Download Themes Data)
+#### 2.4 - Download Themes Data (Download Themes Data)
 
 - **Activity Type:** Copy Activity  
 - **Description:** Downloads theme data from the Rebrickable API and stores it in Azure Blob Storage as JSON.  
@@ -99,7 +99,7 @@ The pipeline is built to securely extract themes and sets data from the Rebricka
   - **Timeout:** 12 hours  
   - **Retries:** 0 retries, 30-second retry interval
 
-### 5. Download Sets Data (Download Sets Data)
+#### 2.5 - Download Sets Data (Download Sets Data)
 
 - **Activity Type:** Copy Activity  
 - **Description:** Downloads set data from the Rebrickable API and stores it in Azure Blob Storage as JSON.  
@@ -118,9 +118,7 @@ The pipeline is built to securely extract themes and sets data from the Rebricka
   - **Timeout:** 12 hours  
   - **Retries:** 0 retries, 30-second retry interval
 
----
-
-## Security Considerations
+#### 2.6 - Security Considerations
 
 1. **Managed Identity (MSI):** The pipeline uses Azure Managed Service Identity to securely access Azure Key Vault. This approach eliminates the need for storing sensitive credentials in the pipeline configuration.
 2. **Secure Key Retrieval:** API credentials (key, username, and password) are dynamically fetched from Azure Key Vault at runtime, ensuring that sensitive information is not hardcoded or exposed.
