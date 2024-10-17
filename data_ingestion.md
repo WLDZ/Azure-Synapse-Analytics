@@ -29,9 +29,12 @@
 
 # Introduction
 
-## Introduction
 
-This document presents a structured solution for managing data workflows from the Rebrickable website to an Azure Data Lake, encompassing three key components. First, **data ingestion** focuses on securely extracting theme and set data from the Rebrickable API and storing it in the raw layer of the Azure Data Lake in JSON format, with credentials managed via Azure Key Vault. Second, the **data warehouse structure creation** involves designing the data warehouse by setting up tables, defining schemas, and implementing business rules to create a robust foundation for processed data storage. Finally, **data transformation and loading into the curated layer** involves cleaning, enriching, and structuring the ingested data before loading it into the curated layer, making it readily available for reporting and analytics. This comprehensive approach ensures efficient data management and secure access, facilitating seamless analytics.
+This document presents a structured solution for managing data workflows from the Rebrickable website to an Azure Data Lake, encompassing three key components. The first phase, **data ingestion**, focuses on securely extracting theme and set data from the Rebrickable API and storing it in the raw layer of the Azure Data Lake in JSON format. To ensure secure access, credentials for the API are managed using Azure Key Vault, which enhances the security of sensitive information throughout the ingestion process.
+
+The second phase involves **data warehouse structure creation**, where the data warehouse is designed and structured to effectively store processed data. This includes setting up tables, defining schemas, and applying relevant business rules. Detailed information about this warehouse structure creation will be provided in the **appendix**, as it serves as a crucial foundation for organizing the data and ensuring that it meets business requirements for reporting and analysis.
+
+Finally, the third phase encompasses **data transformation and loading into the curated layer**. After the initial ingestion, the data undergoes a transformation process, which includes cleaning, enriching, and structuring the data according to specific business requirements. Once transformed, the data is loaded into the curated layer of the data lake, making it readily accessible for reporting and analytics. This comprehensive approach not only streamlines data management but also facilitates informed decision-making through enhanced data accessibility and usability.
 
 
 ---
