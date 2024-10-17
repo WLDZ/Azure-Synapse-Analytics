@@ -196,7 +196,7 @@ Once the data is ready, it is inserted into dimension and fact tables. This invo
 #### 3.4.1 Dimension Tables
 The dimension tables store reference data to support the fact table. The code performs upserts (merge operations) into various dimension tables, ensuring they are populated to cater to **SC 1**.
 
-##### 3.4.1.1 Inserting into Lego_Sets_Dimension
+##### 3.4.2 Inserting into Lego_Sets_Dimension
 The Lego_Sets_Dimension table stores information about Lego sets. The following SQL query merges data into this dimension table:
 
 ```python 
@@ -234,7 +234,7 @@ The following images show the populated data in the Lego_Sets_Dimension. The sec
 
 <br>
 
-##### 3.4.1.2 Inserting into Rebrickable_Profile_Dimension
+##### 3.4.3 Inserting into Rebrickable_Profile_Dimension
 The Rebrickable_Profile_Dimension table stores information about user profiles and their associated LEGO sets.
 
 ```python 
@@ -262,7 +262,7 @@ Columns: User_ID, List_ID, Set_Name, Set_Num, Date_Added
 
 <br>
 
-##### 3.4.1.3 Inserting into Lego_Date_Dimension
+##### 3.4.4 Inserting into Lego_Date_Dimension
 The Lego_Date_Dimension table stores date-related information, typically used to track transactions in the fact table.The following python code generate dates containing dates from 2024 to 2030. It adds various date-related columns (e.g., year, month, day, quarter, day of the week, etc.) and assigns each date a unique ID. Finally, it writes the resulting DataFrame to a Delta table called "lego.date_dimension."
 
 ```python 
@@ -308,7 +308,7 @@ Explanation:
 
 <br>
 
-#### 3.4.2 Inserting into the Fact Table: Owned_Sets_Fact
+#### 3.4.5 Inserting into the Fact Table: Owned_Sets_Fact
 The fact table stores transactional data about Lego sets, linking users, sets, and dates. The code inserts new records into this table:
 
 ```
