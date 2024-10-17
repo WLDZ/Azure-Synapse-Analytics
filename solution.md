@@ -38,12 +38,12 @@ for file in files:
                .withColumn("date_added", current_timestamp()))
 ```
 Explanation:
-spark.read: Reads the files in JSON format. <br>
-option("multiline", "true"): Ensures that multi-line JSON files are read correctly. <br>
-explode(col('results')): Breaks down the nested results array in each file into individual rows.  <br>
-withColumn("user", lit(file.name.split('.')[0])): Adds a new column user using the filename (before the extension). <br>
-withColumn("date_added", current_timestamp()): Adds a column for the current timestamp when the data is added. <br>
-This step transforms the data into a format suitable for insertion into the target tables.
+- spark.read: Reads the files in JSON format.
+- option("multiline", "true"): Ensures that multi-line JSON files are read correctly. 
+- explode(col('results')): Breaks down the nested results array in each file into individual rows.  
+- withColumn("user", lit(file.name.split('.')[0])): Adds a new column user using the filename (before the extension).
+- withColumn("date_added", current_timestamp()): Adds a column for the current timestamp when the data is added. 
+- This step transforms the data into a format suitable for insertion into the target tables.
 
 
 #### 2.3 Creating a Temporary View for SQL Queries
@@ -53,7 +53,7 @@ After processing the data into a DataFrame, the notebook creates a temporary vie
 temp_df.createOrReplaceTempView("source_data")
 ``` 
 Explanation:
-createOrReplaceTempView("source_data"): Registers the DataFrame temp_df as a temporary SQL view called source_data. This makes the data available for querying using SQL commands.
+- createOrReplaceTempView("source_data"): Registers the DataFrame temp_df as a temporary SQL view called source_data. This makes the data available for querying using SQL commands.
 ### 3. Data Insertion into Dimension and Fact Tables
 Once the data is ready, it is inserted into dimension and fact tables. This involves using the MERGE INTO statement to update existing records or insert new ones.
 
@@ -76,13 +76,10 @@ spark.sql("""
 """)
 ```
 Explanation:
-MERGE INTO: Performs an upsert operation (i.e., update or insert).
-WHEN MATCHED THEN UPDATE: Updates existing records where SetNumber matches.
-WHEN NOT MATCHED THEN INSERT: Inserts new records if no match is found on SetNumber.
-Dummy Information:
+- MERGE INTO: Performs an upsert operation (i.e., update or insert).
+- WHEN MATCHED THEN UPDATE: Updates existing records where SetNumber matches.
+- WHEN NOT MATCHED THEN INSERT: Inserts new records if no match is found on SetNumber.
 
-Table: Lego_Sets_Dimension
-Columns: SetNumber, Set_Dim_Key
 
 The following images show the populated data in the Lego_Sets_Dimension. The second image clearly displays the name of each theme, which is fetched from the themes dataset. <br>
 
@@ -138,13 +135,8 @@ spark.sql("""
 """)
 ```
 Explanation:
-Similar to the other dimension tables, this query performs an upsert to update or insert date records.
-Dummy Information:
-
-Table: Lego_Date_Dimension
-Columns: Date_ID, Date_Dim_Key
-
-The following images show the populated data in the Lego_Date_Dimension.
+- Similar to the other dimension tables, this query performs an upsert to update or insert date records.
+- The following images show the populated data in the Lego_Date_Dimension.
 
 <br>
 
@@ -163,12 +155,8 @@ spark.sql("""
 """)
 ```
 Explanation:
-INSERT INTO: Inserts new records into the fact table.
-The SELECT statement retrieves the necessary fields (SetNumber, User_ID, Date_ID, Price) from the source_data temp view.
-Dummy Information:
-
-Fact Table: Owned_Sets_Fact
-Columns: Owned_Fact_ID,Set_ID, User_ID, Date_ID, Price
+- INSERT INTO: Inserts new records into the fact table.
+- The SELECT statement retrieves the necessary fields (SetNumber, User_ID, Date_ID, Price) from the source_data temp view.
 
 <br>
 
@@ -192,7 +180,7 @@ After data insertion, validation queries are run to verify the data was successf
 spark.sql("SELECT * FROM Lego.Owned_Sets_Fact").show()
 ```
 Explanation:
-This query retrieves and displays the contents of the Owned_Sets_Fact table, showing the inserted records. Following images shows the data contained in it. 
+- This query retrieves and displays the contents of the Owned_Sets_Fact table, showing the inserted records. Following images shows the data contained in it. 
 <br>
 
 ![fact](images/fact.png)
