@@ -1,7 +1,7 @@
 # Building a Dimensional Model Using Data from Rebrickable API in Azure Synapse Analytics
 
 ## Objective:
-The objective of this lab is to practice data engineering skills by ingesting data from an external API and transforming it into a dimensional model within Azure Synapse Analytics. This data will represent Lego sets and their attributes, organized into tables for querying and analysis.
+The objective of this activity is to practice data engineering skills by ingesting data from an external API and transforming it into a dimensional model within Azure Synapse Analytics. This data will represent Lego sets and their attributes, organized into tables for querying and analysis.
 
 ## Steps to Complete the Lab:
 
@@ -39,9 +39,5 @@ The objective of this lab is to practice data engineering skills by ingesting da
    - Set proper access permissions for the Azure Data Lake.
    - Use secure methods to store secrets or access keys.
 
-## Deliverables:
-- **Lego Sets Dimension Table**: A table that lists all available Lego sets, complete with set numbers, names, themes, and other attributes.
-- **Optional**:
-  - Fact table showing user ownership of Lego sets.
-  - User profile dimension.
-  - Date dimension indicating when Lego sets were added to users' collections.
+## Solution
+[solution.md](Solution)
