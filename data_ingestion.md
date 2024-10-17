@@ -263,7 +263,8 @@ Columns: User_ID, List_ID, Set_Name, Set_Num, Date_Added
 <br>
 
 ##### 3.4.1.3 Inserting into Lego_Date_Dimension
-The Lego_Date_Dimension table stores date-related information, typically used to track transactions in the fact table.
+The Lego_Date_Dimension table stores date-related information, typically used to track transactions in the fact table.The following python code generate dates containing dates from 2024 to 2030. It adds various date-related columns (e.g., year, month, day, quarter, day of the week, etc.) and assigns each date a unique ID. Finally, it writes the resulting DataFrame to a Delta table called "lego.date_dimension."
+
 ```python 
 date_range = spark.range(0, (2030 - 2024 + 1) * 365).selectExpr("date_add('2024-01-01', CAST(id AS INT)) as Date")
 
