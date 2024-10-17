@@ -39,7 +39,8 @@ The objective of this activity is to practice data engineering skills by ingesti
    - Set proper access permissions for the Azure Data Lake.
    - Use secure methods to store secrets or access keys.
 
-8 **Solution**
+8. **Solution**
+   [solution](./data_ingestion.md)
 
 
 
