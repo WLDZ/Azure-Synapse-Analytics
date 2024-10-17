@@ -201,14 +201,20 @@ The Lego_Sets_Dimension table stores information about Lego sets. The following 
 
 ```python 
 spark.sql("""
-    MERGE INTO Lego.Lego_Sets_Dimension AS target
-    USING updated_keys AS source
-    ON target.SetNumber = source.SetNumber
-    WHEN MATCHED THEN
-        UPDATE SET target.Set_Dim_Key = source.Set_Dim_Key
-    WHEN NOT MATCHED THEN
-        INSERT (SetNumber, Set_Dim_Key)
-        VALUES (source.SetNumber, source.Set_Dim_Key)
+ USING lego_sets AS source
+ON target.SetNumber = source.SetNumber
+WHEN MATCHED AND (
+    target.SetName <> source.SetName OR
+    target.NumberOfParts <> source.NumberOfParts OR
+    target.ImageURL <> source.ImageURL OR
+    target.ThemeID <> source.ThemeID OR
+    target.ThemeName <> source.ThemeName OR
+    target.LastModifiedDateOriginal <> source.LastModifiedDateOriginal OR
+    target.LastModifiedTimeOriginal <> source.LastModifiedTimeOriginal OR
+    target.Year <> source.Year
+)
+THEN
+    UPDATE SET .............. 
 """)
 ```
 Explanation:
@@ -259,16 +265,37 @@ Columns: User_ID, List_ID, Set_Name, Set_Num, Date_Added
 ##### 3.4.1.3 Inserting into Lego_Date_Dimension
 The Lego_Date_Dimension table stores date-related information, typically used to track transactions in the fact table.
 ```python 
-spark.sql("""
-    MERGE INTO Lego.Lego_Date_Dimension AS target
-    USING date_keys AS source
-    ON target.Date_ID = source.Date_ID
-    WHEN MATCHED THEN
-        UPDATE SET target.Date_Dim_Key = source.Date_Dim_Key
-    WHEN NOT MATCHED THEN
-        INSERT (Date_ID, Date_Dim_Key)
-        VALUES (source.Date_ID, source.Date_Dim_Key)
-""")
+date_range = spark.range(0, (2030 - 2024 + 1) * 365).selectExpr("date_add('2024-01-01', CAST(id AS INT)) as Date")
+
+# Step 3: Add additional columns
+date_dimension = date_range.withColumn("Year", year(col("Date"))) \
+    .withColumn("Month", month(col("Date"))) \
+    .withColumn("Day", dayofmonth(col("Date"))) \
+    .withColumn("Quarter", quarter(col("Date"))) \
+    .withColumn("Day_of_Week", dayofweek(col("Date"))) \
+    .withColumn("Week_of_Year", weekofyear(col("Date"))) \
+    .withColumn("Is_Weekend", when(dayofweek(col("Date")).isin(1, 7), True).otherwise(False)) \
+    .withColumn("Month_Name", date_format(col("Date"), 'MMMM')) \
+    .withColumn("Day_Name", date_format(col("Date"), 'EEEE'))
+
+# Step 4: Select the final columns and add Date_ID
+final_date_dimension = date_dimension.select(
+    expr("row_number() over (order by Date) as Date_ID"),  # Generate unique Date_ID
+    "Date",
+    "Year",
+    "Month",
+    "Day",
+    "Quarter",
+    "Day_of_Week",
+    "Week_of_Year",
+    "Is_Weekend",
+    "Month_Name",
+    "Day_Name"
+)
+
+# Step 5: Write the DataFrame to the Date_Dimension Delta table
+
+final_date_dimension.write.mode("append").insertInto("lego.date_dimension")
 ```
 Explanation:
 - Similar to the other dimension tables, this query performs an upsert to update or insert date records.
