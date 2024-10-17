@@ -39,5 +39,27 @@ The objective of this activity is to practice data engineering skills by ingesti
    - Set proper access permissions for the Azure Data Lake.
    - Use secure methods to store secrets or access keys.
 
-## Solution
-[solution](./solution.md)
+8 **Solution Overview**
+
+The solution is divided into three parts:
+
+#### 1. Data Ingestion from Rebrickable Website and Storing in Raw Layer
+The first part involves extracting data from the Rebrickable website. This data is ingested into the raw layer of the data lake, preserving its original form without any transformations. This layer acts as the foundational storage, where all raw, unprocessed data is saved for further processing. Following is the link to
+the data ingestion process that is used for this activity.
+[Data Ingestion](./data_ingestion.md)
+
+
+
+#### 2. Data Warehouse Structure Creation
+In this phase, we design and create the structure of the data warehouse where the processed data will be housed. This includes setting up necessary tables, defining schemas, and applying any relevant business rules. The warehouse serves as the structured environment for storing transformed data. Following is the link to
+the data warehouse creation process for this activity.
+[Data Warehouse](./table_creation.md)
+
+
+#### 3. Data Transformation and Loading into Curated Layer
+The final part involves loading the raw data from the data lake, performing transformations to clean, enrich, and structure the data according to business requirements. This transformed data is then loaded into the curated layer of the data lake. The curated layer serves as the final repository from which data can be accessed and served to meet business needs. Following is the link to the final activity of the whole process
+[Solution](./solution.md)
+
+
+
+
