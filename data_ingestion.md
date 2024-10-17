@@ -27,21 +27,12 @@
 
 ---
 
-## Overview
+# Introduction
 
-The overall solution is divided into three parts:
+## Introduction
 
-### 1. Data Ingestion from Rebrickable Website to Raw Layer
+This document presents a structured solution for managing data workflows from the Rebrickable website to an Azure Data Lake, encompassing three key components. First, **data ingestion** focuses on securely extracting theme and set data from the Rebrickable API and storing it in the raw layer of the Azure Data Lake in JSON format, with credentials managed via Azure Key Vault. Second, the **data warehouse structure creation** involves designing the data warehouse by setting up tables, defining schemas, and implementing business rules to create a robust foundation for processed data storage. Finally, **data transformation and loading into the curated layer** involves cleaning, enriching, and structuring the ingested data before loading it into the curated layer, making it readily available for reporting and analytics. This comprehensive approach ensures efficient data management and secure access, facilitating seamless analytics.
 
-This part focuses on extracting data from the Rebrickable website. The pipeline is designed to securely retrieve theme and set data from the Rebrickable API and store it in the raw layer of the Azure Data Lake in JSON format. Credentials for accessing the API are securely managed using Azure Key Vault.
-
-### 2. Data Warehouse Structure Creation
-
-In this phase, the data warehouse is designed and structured, including setting up tables, defining schemas, and applying any business rules. This warehouse provides the foundation for storing processed data. Further details are provided [here](./table_creation.md).
-
-### 3. Data Transformation and Loading into the Curated Layer
-
-After ingestion, data is transformed according to business requirements. This process includes cleaning, enriching, and structuring the data. The transformed data is then loaded into the curated layer of the data lake, making it available for reporting and analytics. The detailed solution can be found [here](./solution.md).
 
 ---
 
