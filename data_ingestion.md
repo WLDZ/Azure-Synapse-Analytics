@@ -168,3 +168,5 @@ The following image shows the overall structure of the final data ingestion pipe
 ## Summary
 
 The **Ingest** pipeline provides a secure, efficient solution for extracting data from the Rebrickable API. It leverages Azure Key Vault and Managed Service Identity (MSI) for secure credential management and uses REST-based API calls for data extraction. With well-defined retry and timeout policies, the pipeline ensures reliable and secure data ingestion into Azure Blob Storage for future use.
+
+**[Go to Next Section](./solution.md)**
