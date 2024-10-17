@@ -40,4 +40,4 @@ The objective of this activity is to practice data engineering skills by ingesti
    - Use secure methods to store secrets or access keys.
 
 ## Solution
-[zolution.md](Wiki Page Name)
+[solution](./solution.md)
