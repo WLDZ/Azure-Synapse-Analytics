@@ -4,7 +4,7 @@
 
 1. [Solution](#solution)  
 2. [Pipeline Overview](#pipeline-overview)  
-3. [Pipeline Steps](#pipeline-steps)  
+3. -[Pipeline Steps](#pipeline-steps)  
    - [Retrieve API Key (Get Key)](#1-retrieve-api-key-get-key)  
    - [Retrieve API Username (Get User Name from Vault)](#2-retrieve-api-username-get-user-name-from-vault)  
    - [Retrieve API Password (Get Password from Vault)](#3-retrieve-api-password-get-password-from-vault)  
