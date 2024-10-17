@@ -9,7 +9,7 @@ The notebook begins by setting up the Spark environment. This involves defining 
 spark_pool = 'MySparkPool'
 ``` 
 Explanation:
-This line specifies the name of the Spark pool as MySparkPool. The resources for running the Spark jobs will be drawn from this pool.
+- This line specifies the name of the Spark pool as MySparkPool. The resources for running the Spark jobs will be drawn from this pool.
 ### 2. Loading and Processing JSON Files
 The notebook retrieves JSON files from an Azure Data Lake storage location. These files are then processed and prepared for insertion into dimension and fact tables.
 
@@ -20,11 +20,9 @@ First, the code lists all the files in a specified folder of the Azure Data Lake
 files = mssparkutils.fs.ls("abfss://raw@adlg2dev.dfs.core.windows.net/SomeFolder")
 ```
 Explanation:
-mssparkutils.fs.ls: Lists all the files in the specified Azure Data Lake folder.
-The path "abfss://raw@adlg2dev.dfs.core.windows.net/SomeFolder" specifies the storage location.
-Dummy Information:
-
-Folder path: abfss://raw@some_account_name.dfs.core.windows.net/DummyFolder
+- mssparkutils.fs.ls: Lists all the files in the specified Azure Data Lake folder.
+- The path "abfss://raw@adlg2dev.dfs.core.windows.net/SomeFolder" specifies the storage location.
+- Dummy Information: Folder path: abfss://raw@some_account_name.dfs.core.windows.net/DummyFolder
 
 #### 2.2 Reading and Exploding JSON Files
 Next, the notebook reads each file and processes its contents. This involves exploding any nested arrays and adding additional metadata, such as the user and date_added.
