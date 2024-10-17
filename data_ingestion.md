@@ -1,223 +1,430 @@
-# LEGO Data Ingestion Pipeline Using Azure Data Factory
-
+# Azure Synapse Pipeline: Detailed Documentation
 
 ## Table of Contents
-1. Overview of Resource Groups
-2. Development Environment Resources
-3. Production Environment Resources
-4. Data Ingestion and Process Flow
-5. Setup Guide
-6. Customization
 
+0. [Solution](#Solution)
+1. [Pipeline Overview](#pipeline-overview)
+2. [Pipeline Steps](#pipeline-steps)
+   - [Retrieve API Key (Get Key)](#1-retrieve-api-key-get-key)
+   - [Retrieve API Username (Get User Name from Vault)](#2-retrieve-api-username-get-user-name-from-vault)
+   - [Retrieve API Password (Get Password from Vault)](#3-retrieve-api-password-get-password-from-vault)
+   - [Download Themes Data (Download and Themes Data)](#4-download-themes-data-download-and-themes-data)
+   - [Download Sets Data (Download Sets Data)](#5-download-sets-data-download-sets-data)
+3. [Security Considerations](#security-considerations)
+4. [Execution Flow](#execution-flow)
+5. [Summary](#summary)
 
-## Overview
+---
 
-This Azure Data Factory (ADF) pipeline is designed to automate the ingestion of LEGO data files and user-specific data from the Rebrickable API into **Azure Data Lake Storage (ADLS)**. The pipeline securely retrieves credentials from **Azure Key Vault**, handles large data volumes with **pagination** and **throttling**, and includes error-handling mechanisms. Additionally, a **Logic App** is used to send custom notifications to the admin in case of failures or critical events.
+## Solution
 
-## 1. Overview of Resource Groups
+The solution is divided into three parts:
 
-The image illustrates three Azure Resource Groups associated with an Azure subscription:
+#### 1. Data Ingestion from Rebrickable Website and Storing in Raw Layer
 
-- **DP203_PROD** (Production)
-- **DP203_DEV** (Development)
-- **SHAREDRG** (Shared)
+The first part involves extracting data from the Rebrickable website and rest of this page will discuss this part in detail.
 
-Each resource group holds specific resources required for different stages of the workflow:
+#### 2. Data Warehouse Structure Creation
 
-- **DP203_PROD**: Contains all necessary resources for tasks in the production environment.
-- **DP203_DEV**: Contains all necessary resources for tasks in the development environment.
-- **SHAREDRG**: Contains shared resources such as Logic Apps, which handle error management for both the development and production environments.
+In this phase, we design and create the structure of the data warehouse where the processed data will be housed. This includes setting up necessary tables, defining schemas, and applying any relevant business rules. The warehouse serves as the structured environment for storing transformed data. Following is the link to the data warehouse creation process for this activity. <br>
+[Data Warehouse](./table_creation.md)
 
-![Resource Groups](images/resource%20groups.png)
+#### 3. Data Transformation and Loading into Curated Layer
 
-## 2. Development Environment Resources
+The final part involves loading the raw data from the data lake, performing transformations to clean, enrich, and structure the data according to business requirements. This transformed data is then loaded into the curated layer of the data lake. The curated layer serves as the final repository from which data can be accessed and served to meet business needs. Following is the link to the final activity of the whole process. <br>
+[Solution](./solution.md)
 
-In the development environment, three core resources are used for data integration, storage, and security:
+---
 
-- **adfdev203** (Data Factory V2): Handles data integration and transformation processes.
-- **adlg2dev** (Storage Account): Manages the storage needs for the development environment.
-- **DP203** (Key Vault): Stores and manages secrets, such as keys and connection strings, securely.
+<br>
+<br>
 
-![Development Resources](images/dev.png)
+## Pipeline Overview
 
-## 3. Production Environment Resources
+The following image shows the overall structure of the final data ingestion pipeline. <br>
 
-In the production environment, two core resources are used:
+![Pipeline](images/synapse.png)
 
-- **adf203prod** (Data Factory V2): Handles data integration and transformation processes.
-- **adlg2prod** (Storage Account): Manages the storage needs for the production environment.
-- **DP203** (Key Vault) from the development environment will be used to fetch all secrets required in production.
+The pipeline is designed to securely extract theme and set data from the Rebrickable API and store it in Azure Datalake in JSON format. It fetches the necessary credentials from **Azure Key Vault** and handles data ingestion through a series of REST API calls.
 
-![Production Resources](images/prod.png)
+---
 
-## 4. Shared Resource Group
+## Pipeline Steps
 
-In the shared resource group, one key resource is utilized:
+### 1. Retrieve API Key (Get Key)
 
-- **dp203logicapp** (Logic App): This Logic App is used by both the development and production environments to handle failure notifications via emails.
+- **Activity Type:** Web Activity
+- **Description:** Fetches the API key from Azure Key Vault to authenticate subsequent API requests.
 
-![Logic App](images/logicapp.png)
+  - **HTTP Method:** `GET`
+  - **URL:** `https://dp203.vault.azure.net/secrets/Rebrickable?api-version=7.0`
+  - **Authentication:** Managed Service Identity (MSI)
+  - **Runtime Environment:** `AutoResolveIntegrationRuntime`
+  - **Timeout:** 12 hours
+  - **Retries:** 0 retries, 30-second retry interval
 
-## 5. Git Repository Overview
+---
 
-The image shows the Git repository for the project named **Rebrickable_CICD**. This repository contains folders and files related to Data Factory configurations and DevOps setup.
+### 2. Retrieve API Username (Get User Name from Vault)
 
-The directory structure includes:
+- **Activity Type:** Web Activity
+- **Description:** Fetches the API username from Azure Key Vault.
 
-- **data-factory**: Contains datasets, factory settings, linked services, pipelines, triggers, and a publish configuration file.
-- **devops**: Contains pipeline and job YAML files, `package.json`, and `azure-pipelines.yml`.
+  - **HTTP Method:** `GET`
+  - **URL:** `https://dp203.vault.azure.net/secrets/REBRICKABLE-API-UNAME?api-version=7.0`
+  - **Authentication:** Managed Service Identity (MSI)
+  - **Depends On:** Success of "Get Key" activity
+  - **Runtime Environment:** `AutoResolveIntegrationRuntime`
+  - **Timeout:** 12 hours
+  - **Retries:** 0 retries, 30-second retry interval
 
-![DevOps Repository](images/devopps.png)
+---
 
-## 6. Azure DevOps CI/CD Pipeline
+### 3. Retrieve API Password (Get Password from Vault)
 
-The following image illustrates the CI/CD pipeline for the **Rebrickable_CICD** repository, specifically on the main branch. The pipeline has three stages:
+- **Activity Type:** Web Activity
+- **Description:** Fetches the API password from Azure Key Vault.
 
-- **BUILD**: Status - SUCCESS
-- **DEV**: Status - SUCCESS
-- **PROD**: Status - SUCCESS
+  - **HTTP Method:** `GET`
+  - **URL:** `https://dp203.vault.azure.net/secrets/REBRICKABLE-API-PASSWORD?api-version=7.0`
+  - **Authentication:** Managed Service Identity (MSI)
+  - **Depends On:** Success of "Get User Name from Vault" activity
+  - **Runtime Environment:** `AutoResolveIntegrationRuntime`
+  - **Timeout:** 12 hours
+  - **Retries:** 0 retries, 30-second retry interval
 
-![CI/CD Pipeline](images/CICD.png)
+---
 
-## 7. Git Configuration in Development Data Factory
+### 4. Download Themes Data (Download and Themes Data)
 
-The following image shows the Git configuration for the development Data Factory (`adfdev203`). This configuration is essential for maintaining version control and enabling CI/CD workflows.
+- **Activity Type:** Copy Activity
+- **Description:** Downloads themes data from the Rebrickable API and stores it in Azure Blob Storage as JSON.
 
-![Git Configuration](images/git.png)
+  - **Source:**
 
-## 8. Linked Services
+    - **Type:** `RestSource`
+    - **HTTP Method:** `GET`
+    - **Authorization:** Dynamically generated using the API key.
+    - **Pagination:** Follows `$.next` for paginated responses.
+    - **Timeout:** 1 minute 40 seconds
+    - **Request Interval:** 1 second
 
-The following image shows all the linked services required for the data integration tasks. These linked services allow communication between Data Factory and various Azure services or external APIs:
+  - **Sink:**
 
-- **ADLG2**: Type - Azure Data Lake Storage Gen2
-- **AzureKeyVault**: Type - Azure Key Vault
-- **RebrickableAPI**: Type - REST
-- **RebrickableHTTP**: Type - HTTP
+    - **Type:** `JsonSink`
+    - **Storage Type:** Azure Blob FS
+    - **Data Format:** JSON
 
-![Linked Services](images/linked_services.png)
+  - **Depends On:** Success of "Get Password from Vault"
+  - **Timeout:** 12 hours
+  - **Retries:** 0 retries, 30-second retry interval
 
-## 9. Final Pipeline Workflow
+---
 
-The following image represents the final workflow of the pipeline, covering all the tasks and configurations required for the data integration process. The explanation of this workflow is detailed in the following sections.
+### 5. Download Sets Data (Download Sets Data)
 
-![Final Pipeline](images/final%20pipeline.png)
+- **Activity Type:** Copy Activity
+- **Description:** Downloads sets data from the Rebrickable API and stores it in Azure Blob Storage as JSON.
 
-#Section 2 - Pipeline Breakdown
+  - **Source:**
 
-### 1. **Download LEGO Zip Files**
+    - **Type:** `RestSource`
+    - **HTTP Method:** `GET`
+    - **Authorization:** API key dynamically generated.
+    - **Pagination:** Uses `$.next` for handling paginated data.
+    - **Timeout:** 1 minute 40 seconds
+    - **Request Interval:** 2 seconds
 
-- **Activity**: `ForEach`
-- **Description**: This step downloads zipped LEGO data files such as `themes.csv.gz` and `colors.csv.gz` from the Rebrickable API.
-- **Storage**: The files are stored in **Azure Data Lake Storage (ADLS)** in binary format.
+  - **Sink:**
 
-### 2. **Get API Key, Username, and Password from Key Vault**
+    - **Type:** `JsonSink`
+    - **Storage Type:** Azure Blob FS
+    - **Data Format:** JSON
 
-- **Activities**:
-  - `Get Key For Key Vault`
-  - `Get Username From Key Vault`
-  - `Get Password From Key Vault`
-- **Description**: These steps securely retrieve the API Key, Username, and Password from **Azure Key Vault** using **Managed Service Identity (MSI)**. This ensures that sensitive credentials are not hardcoded and are accessed securely at runtime.
+  - **Depends On:** Success of "Download and Themes Data"
+  - **Timeout:** 12 hours
+  - **Retries:** 0 retries, 30-second retry interval
 
-### 3. **Generate User Token**
+---
 
-- **Activity**: `Generate User Token`
-- **Description**: This step generates a user token for Rebrickable API authentication. The token is then used in subsequent API requests to fetch user-specific data.
+## Security Considerations
 
-### 4. **Looping Through Users and Fetching Data**
+1. **Managed Identity (MSI):** The pipeline uses Azure Managed Service Identity to securely access Azure Key Vault. This eliminates the need for storing credentials in the pipeline configuration.
+2. **Secure Key Retrieval:** API credentials (key, username, and password) are dynamically fetched from Azure Key Vault during runtime, ensuring that sensitive information is not hardcoded or exposed.
 
-- **Activity**: `Loop Over Users`
-- **Description**: This step iterates over a list of users defined in the `userlist` variable (e.g., `allparts`, `partlists`). It sends a GET request to the Rebrickable API for each user, fetching relevant LEGO part lists or inventory data.
-- **Pagination and Throttling**: The pipeline automatically handles **pagination** by following the next page links provided in the API response. It also manages **API throttling** to avoid hitting rate limits, ensuring smooth data fetching without errors.
-- **Storage**: The user-specific data is stored in **ADLS** in **JSON format**, with directories organized by date to support easy retrieval and further processing.
+3. **Confidential Output:** Input and output of web activities are non-secure by default but can be configured as secure to prevent logging sensitive information.
 
-### 5. **Error Handling with Failure Pipeline**
+---
 
-- **Activity**: `Failure Pipeline`
-- **Description**: If any activity fails, the pipeline triggers a **Failure Pipeline**. This ensures that the error is logged and proper failure workflows are initiated.
+## Execution Flow
 
-### 6. **Custom Admin Notification via Logic App**
+1. **Credential Fetching:**
 
-- **Logic App**: A **Logic App** is configured to send a custom alert to the admin when failures occur, or when other critical events require attention. The alert message includes details about the pipeline's execution status, such as:
-  - Failed activity
-  - Timestamp of the failure
-  - Possible reasons for the failure
+   - The pipeline starts by retrieving the API key, username, and password from Azure Key Vault in three consecutive steps.
+   - Each step depends on the successful execution of the previous one, ensuring that credentials are fetched in the correct order.
 
-## Pipeline Activities and Flow
+2. **Data Extraction:**
 
-### **Activities Overview**:
+   - After retrieving the credentials, two `Copy Activities` are executed to download theme and set data from the Rebrickable API.
+   - The data is stored in Azure Blob Storage in JSON format.
 
-- **ForEach (Download All Zip Files)**: Downloads LEGO zip files from the Rebrickable API.
-- **WebActivity (Key Vault)**: Retrieves credentials (API key, username, password) from Azure Key Vault.
-- **WebActivity (Token Generation)**: Generates a token to authenticate further API requests.
-- **ForEach (Loop Over Users)**: Loops through the list of users and retrieves data.
-- **Failure Pipeline**: Executes if any activity fails during the pipeline run.
+3. **Data Storage:**
+   - Both the themes and sets data are stored in Azure Blob Storage in JSON format, making the data available for further analysis or processing.
 
-### **Failure Handling**:
+**In the same way, the detials of user profile were fecthed by using the user endpoints provided by Rebrickable api.**
 
-- **Wait and Error Steps**: The pipeline uses a **Wait** activity as a dummy step to control the flow and ensure that dependent activities run only if prior steps succeed. If a failure occurs, the **Failure Pipeline** is triggered, and the **Logic App** sends alerts to the admin.
+---
 
-## Variables
+## Summary
 
-- **result**: Holds the list of LEGO zip files to download (e.g., `themes.csv.gz`, `colors.csv.gz`).
-- **userlist**: Contains the user-specific identifiers for API data retrieval (e.g., `allparts`, `partlists`).
-- **token**: Stores the user token generated for API authentication.
-- **value** and **uservalue**: Temporary placeholders for dynamic values during execution.
+The **Ingest** pipeline provides a secure, efficient solution for extracting data from the Rebrickable API. It leverages Azure Key Vault and Managed Service Identity (MSI) for secure credential management and uses REST-based API calls for data extraction. With well-defined retry and timeout policies, the pipeline ensures reliable and secure data ingestion into Azure Blob Storage for future use.
 
-## Error Management and Notifications
+# Data Load Process in Dimension and Fact Tables
 
-- **Error Handling**: The pipeline includes robust error management through the **Failure Pipeline**, which is executed when any step fails.
-- **Admin Notifications**: A **Logic App** is configured to send custom error notifications to the admin, ensuring prompt action in case of pipeline failures. The message includes details about the failed activity, the reason for failure, and the time of occurrence.
+## Introduction
 
-## Key Features
+This document explains the process of loading data into dimension and fact tables in a data warehouse using Spark with PySpark and Azure Synapse. The notebook utilizes various Spark transformations and SQL commands to merge, read, and process data from JSON files into relevant tables. The approach ensures that the data is effectively handled for analytics purposes.
 
-1. **Secure Credential Management**:
+### 1. Environment Setup
 
-   - API keys and passwords are securely stored in **Azure Key Vault** and accessed using **Managed Service Identity (MSI)**, ensuring security and compliance.
+The notebook begins by setting up the Spark environment. This involves defining the Spark pool that provides the required computational resources.
 
-2. **Automatic Pagination and Throttling**:
+```python
+spark_pool = 'MySparkPool'
+```
 
-   - The pipeline automatically handles pagination for large data sets and prevents API throttling issues by adjusting the frequency of API calls.
+Explanation:
 
-3. **Failure Handling and Admin Alerts**:
+- This line specifies the name of the Spark pool as MySparkPool. The resources for running the Spark jobs will be drawn from this pool.
 
-   - The pipeline is equipped with robust failure handling, ensuring that if any part of the process fails, the **Failure Pipeline** is triggered. The **Logic App** sends detailed failure notifications to the admin for timely intervention.
+### 2. Loading and Processing JSON Files
 
-4. **Customizable Data Fetching**:
-   - Both the list of downloadable LEGO zip files (`result`) and user data (`userlist`) can be easily customized to fetch additional datasets or user information.
+The notebook retrieves JSON files from an Azure Data Lake storage location. These files are then processed and prepared for insertion into dimension and fact tables.
 
-## Setup Guide
+#### 2.1 Listing Files in the Azure Data Lake Folder
 
-### Prerequisites
+First, the code lists all the files in a specified folder of the Azure Data Lake using mssparkutils.fs.ls.
 
-- **Azure Subscription**: Ensure you have access to create and manage Azure Data Factory, Data Lake, Key Vault, and Logic Apps.
-- **Azure Key Vault**: Set up Key Vault to securely store API credentials (API Key, Username, Password).
-- **Logic App**: Create a Logic App that can send custom email or message notifications to the admin when the pipeline encounters errors.
+```python
+files = mssparkutils.fs.ls("abfss://raw@adlg2dev.dfs.core.windows.net/SomeFolder")
+```
 
-### Steps
+Explanation:
 
-1. **Deploy Azure Data Factory**:
+- mssparkutils.fs.ls: Lists all the files in the specified Azure Data Lake folder.
+- The path "abfss://raw@adlg2dev.dfs.core.windows.net/SomeFolder" specifies the storage location.
+- Dummy Information: Folder path: abfss://raw@some_account_name.dfs.core.windows.net/DummyFolder
 
-   - Create a new **Azure Data Factory** instance for both Development and Production environments.
-   - Deploy the pipeline configuration for data ingestion.
+#### 2.2 Reading and Exploding JSON Files
 
-2. **Configure Azure Data Lake Storage (ADLS)**:
+Next, the notebook reads each file and processes its contents. This involves exploding any nested arrays and adding additional metadata, such as the user and date_added.
 
-   - Create **Azure Data Lake Storage** to store downloaded data and fetched API results.
+```python
+for file in files:
+    temp_df = (spark.read
+               .option("multiline", "true")
+               .format('json')
+               .load(file.path)
+               .withColumn("explodedArray", explode(col('results')))
+               .withColumn("user", lit(file.name.split('.')[0]))
+               .withColumn("date_added", current_timestamp()))
+```
 
-3. **Set Up Azure Key Vault**:
+Explanation:
 
-   - Store your Rebrickable API credentials in **Azure Key Vault**.
-   - Grant **Managed Service Identity (MSI)** permissions to the ADF pipeline to access these credentials.
+- spark.read: Reads the files in JSON format.
+- option("multiline", "true"): Ensures that multi-line JSON files are read correctly.
+- explode(col('results')): Breaks down the nested results array in each file into individual rows.
+- withColumn("user", lit(file.name.split('.')[0])): Adds a new column user using the filename (before the extension).
+- withColumn("date_added", current_timestamp()): Adds a column for the current timestamp when the data is added.
+- This step transforms the data into a format suitable for insertion into the target tables.
 
-4. **Set Up the Logic App**:
+#### 2.3 Creating a Temporary View for SQL Queries
 
-   - Create a **Logic App** that listens for specific events (such as pipeline failures) and sends custom alerts to the admin.
-   - Ensure that the Logic App is integrated with ADF and is triggered appropriately in case of errors.
+After processing the data into a DataFrame, the notebook creates a temporary view of the data. This allows the data to be accessed using SQL.
 
-5. **Deploy and Test**:
-   - After deploying the pipeline and configuring the Logic App, trigger a test run to verify that all components (data download, API fetching, failure handling, and notifications) are functioning as expected.
+```python
+temp_df.createOrReplaceTempView("source_data")
+```
 
-## Customization
+Explanation:
 
-- **Adding More Files**: Update the `result` variable to include additional file names that need to be downloaded (e.g., `sets.csv.gz`, `minifigs.csv.gz`).
-- **Adding More Users**: Modify the `userlist` variable to add more user-specific data fetching (e.g., `user123`, `user456`).
+- createOrReplaceTempView("source_data"): Registers the DataFrame temp_df as a temporary SQL view called source_data. This makes the data available for querying using SQL commands.
+
+### 3. Data Insertion into Dimension and Fact Tables
+
+Once the data is ready, it is inserted into dimension and fact tables. This involves using the MERGE INTO statement to update existing records or insert new ones.
+
+#### 3.1 Dimension Tables
+
+The dimension tables store reference data to support the fact table. The code performs upserts (merge operations) into various dimension tables, ensuring they are populated to cater to **SC 1**.
+
+##### 3.1.1 Inserting into Lego_Sets_Dimension
+
+The Lego_Sets_Dimension table stores information about Lego sets. The following SQL query merges data into this dimension table:
+
+```python
+spark.sql("""
+    MERGE INTO Lego.Lego_Sets_Dimension AS target
+    USING updated_keys AS source
+    ON target.SetNumber = source.SetNumber
+    WHEN MATCHED THEN
+        UPDATE SET target.Set_Dim_Key = source.Set_Dim_Key
+    WHEN NOT MATCHED THEN
+        INSERT (SetNumber, Set_Dim_Key)
+        VALUES (source.SetNumber, source.Set_Dim_Key)
+""")
+```
+
+Explanation:
+
+- MERGE INTO: Performs an upsert operation (i.e., update or insert).
+- WHEN MATCHED THEN UPDATE: Updates existing records where SetNumber matches.
+- WHEN NOT MATCHED THEN INSERT: Inserts new records if no match is found on SetNumber.
+
+The following images show the populated data in the Lego_Sets_Dimension. The second image clearly displays the name of each theme, which is fetched from the themes dataset. <br>
+
+![sets](images/sets.png)
+
+<br>
+<br>
+
+![sets2](images/set2.png)
+
+<br>
+
+##### 3.1.2 Inserting into Rebrickable_Profile_Dimension
+
+The Rebrickable_Profile_Dimension table stores information about user profiles and their associated LEGO sets.
+
+```python
+spark.sql("""
+        MERGE INTO lego.Rebrickable_Profile_Dimension AS rp
+        USING (
+            SELECT DISTINCT c.user AS User_ID, c.list_id, c.name AS Set_Name, ...
+        )
+        ON rp.Set_Num = c.set_num
+           AND rp.List_ID = c.list_id
+        WHEN MATCHED AND (
+            rp.User_ID <> c.User_ID OR ...
+        ) THEN
+            UPDATE ...
+""")
+```
+
+This query performs an upsert to update or insert user profile records. When matched, it updates the User_ID, Set_Name, and Set_Num fields if there are differences. If no match is found, a new record is inserted.
+
+Table: Rebrickable_Profile_Dimension
+Columns: User_ID, List_ID, Set_Name, Set_Num, Date_Added
+
+<br>
+
+![rebrickable_profile](images/rebrickable_profile.png)
+
+<br>
+
+##### 3.1.3 Inserting into Lego_Date_Dimension
+
+The Lego_Date_Dimension table stores date-related information, typically used to track transactions in the fact table.
+
+```python
+spark.sql("""
+    MERGE INTO Lego.Lego_Date_Dimension AS target
+    USING date_keys AS source
+    ON target.Date_ID = source.Date_ID
+    WHEN MATCHED THEN
+        UPDATE SET target.Date_Dim_Key = source.Date_Dim_Key
+    WHEN NOT MATCHED THEN
+        INSERT (Date_ID, Date_Dim_Key)
+        VALUES (source.Date_ID, source.Date_Dim_Key)
+""")
+```
+
+Explanation:
+
+- Similar to the other dimension tables, this query performs an upsert to update or insert date records.
+- The following images show the populated data in the Lego_Date_Dimension.
+
+<br>
+
+![date_dimension](images/date_dimension.png)
+
+<br>
+
+#### 3.2 Inserting into the Fact Table: Owned_Sets_Fact
+
+The fact table stores transactional data about Lego sets, linking users, sets, and dates. The code inserts new records into this table:
+
+```
+spark.sql("""
+    INSERT INTO Lego.Owned_Sets_Fact (Owned_Fact_ID,Set_ID, User_ID, Date_ID, Price)
+    SELECT Owned_Fact_ID,Set_ID, User_ID, Date_ID, Price
+    FROM source_data
+""")
+```
+
+Explanation:
+
+- INSERT INTO: Inserts new records into the fact table.
+- The SELECT statement retrieves the necessary fields (SetNumber, User_ID, Date_ID, Price) from the source_data temp view.
+
+<br>
+
+![fact](images/fact.png)
+
+<br>
+
+### 4. Use of createOrReplaceTempView
+
+The function createOrReplaceTempView allows a DataFrame to be registered as a temporary SQL view, making it accessible via SQL queries. In the code, this is used to enable SQL-based operations on the DataFrame data.
+
+```python
+temp_df.createOrReplaceTempView("source_data")
+```
+
+Explanation:
+createOrReplaceTempView creates a temporary view called source_data from the DataFrame temp_df. This enables the data to be queried directly using SQL, such as in the fact table insertion described above.
+
+### 5. Data Validation Using SQL Queries
+
+After data insertion, validation queries are run to verify the data was successfully loaded into the **Fact** table.
+
+```python
+
+spark.sql("SELECT * FROM Lego.Owned_Sets_Fact").show()
+```
+
+Explanation:
+
+- This query retrieves and displays the contents of the Owned_Sets_Fact table, showing the inserted records. Following images shows the data contained in it.
+  <br>
+
+![fact](images/fact.png)
+
+<br>
+
+### 6. Register the Tables in a Catalog:
+
+Azure Synapse Analytics was used to register the tables in a catalog. This allows SQL queries to be executed using table names without needing to reference the file paths directly, simplifying data access and query execution. The following image shows how all the tables look after being registered in the catalog.
+
+<br>
+
+![catalog](images/catalog.png)
+
+<br>
+
+### 7. Final Structure of tables in Data Lake
+
+The final structure of the dimensional and fact tables is shown in the image below. This structure has been kept simple, as it utilizes Delta format underneath, which facilitates efficient data management and query performance.
+
+<br>
+
+![partition](images/partition.png)
+
+<br>
+
+### 7. Conclusion
+
+This notebook automates the process of loading, merging, and inserting data into dimension and fact tables using PySpark and SQL in an Azure Synapse environment. The dimension tables are populated to cater to SC 1, ensuring that reference data is available to support the fact table. This process guarantees data consistency and efficient loading from the raw files stored in an Azure Data Lake to the appropriate data warehouse tables.
+
+**[Infromation on Warehouse Creation](./table_creation.md)**
