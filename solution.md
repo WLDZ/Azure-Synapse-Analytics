@@ -187,24 +187,38 @@ temp_df.createOrReplaceTempView("source_data")
 Explanation:
 createOrReplaceTempView creates a temporary view called source_data from the DataFrame temp_df. This enables the data to be queried directly using SQL, such as in the fact table insertion described above.
 ### 5. Data Validation Using SQL Queries
-After data insertion, validation queries are run to verify the data was successfully inserted into the tables.
+After data insertion, validation queries are run to verify the data was successfully loaded into the **Fact** table.
 
 ```python
 
-spark.sql("SELECT * FROM Lego.Lego_Sets_Fact").show()
+spark.sql("SELECT * FROM Lego.Owned_Sets_Fact").show()
 ```
 Explanation:
-This query retrieves and displays the contents of the Lego_Sets_Fact table, showing the inserted records.
-### 6. Output and Metrics
-The notebook provides metrics about the number of rows affected by the data insertions and merges. These metrics help verify the data operations' success.
+This query retrieves and displays the contents of the Owned_Sets_Fact table, showing the inserted records. Following images shows the data contained in it. 
+<br>
 
-```python
-affected_rows = spark.sql("""
-    SELECT COUNT(*) as num_affected_rows
-    FROM Lego.Lego_Sets_Fact
-""").show()
-```
-Explanation:
-This query counts the total number of rows in the Lego_Sets_Fact table after the insertion process.
+![fact](images/fact.png)
+
+<br>
+
+### 6. Register the Tables in a Catalog:
+Azure Synapse Analytics was used to register the tables in a catalog. This allows SQL queries to be executed using table names without needing to reference the file paths directly, simplifying data access and query execution. The following image shows how all the tables look after being registered in the catalog.
+
+
+<br>
+
+![catalog](images/catalog.png)
+
+<br>
+
+### 7. Final Structure of tables in Data Lake
+The final structure of the dimensional and fact tables is shown in the image below. This structure has been kept simple, as it utilizes Delta format underneath, which facilitates efficient data management and query performance.
+
+<br>
+
+![partition](images/partition.png)
+
+<br>
+
 ### 7. Conclusion
 This notebook automates the process of loading, merging, and inserting data into dimension and fact tables using PySpark and SQL in an Azure Synapse environment. The dimension tables are populated to cater to SC 1, ensuring that reference data is available to support the fact table. This process guarantees data consistency and efficient loading from the raw files stored in an Azure Data Lake to the appropriate data warehouse tables.
