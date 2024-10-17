@@ -60,7 +60,7 @@ createOrReplaceTempView("source_data"): Registers the DataFrame temp_df as a tem
 Once the data is ready, it is inserted into dimension and fact tables. This involves using the MERGE INTO statement to update existing records or insert new ones.
 
 #### 3.1 Dimension Tables
-The dimension tables store reference data to support the fact table. The code performs upserts (merge operations) into various dimension tables, ensuring they are populated to cater to SC 1.
+The dimension tables store reference data to support the fact table. The code performs upserts (merge operations) into various dimension tables, ensuring they are populated to cater to **SC 1**.
 
 ##### 3.1.1 Inserting into Lego_Sets_Dimension
 The Lego_Sets_Dimension table stores information about Lego sets. The following SQL query merges data into this dimension table:
@@ -97,27 +97,34 @@ The following images show the populated data in the Lego_Sets_Dimension. The sec
 
 <br>
 
-##### 3.1.2 Inserting into Lego_Users_Dimension
-The Lego_Users_Dimension table stores user-related information. This SQL query merges user data into the dimension table:
+##### 3.1.2 Inserting into Rebrickable_Profile_Dimension
+The Rebrickable_Profile_Dimension table stores information about user profiles and their associated LEGO sets.
 
 ```python 
 spark.sql("""
-    MERGE INTO Lego.Lego_Users_Dimension AS target
-    USING new_user_data AS source
-    ON target.User_ID = source.User_ID
-    WHEN MATCHED THEN
-        UPDATE SET target.User_Dim_Key = source.User_Dim_Key
-    WHEN NOT MATCHED THEN
-        INSERT (User_ID, User_Dim_Key)
-        VALUES (source.User_ID, source.User_Dim_Key)
+        MERGE INTO lego.Rebrickable_Profile_Dimension AS rp
+        USING (
+            SELECT DISTINCT c.user AS User_ID, c.list_id, c.name AS Set_Name, ...
+        )
+        ON rp.Set_Num = c.set_num
+           AND rp.List_ID = c.list_id
+        WHEN MATCHED AND (
+            rp.User_ID <> c.User_ID OR ...
+        ) THEN
+            UPDATE ...
 """)
 ```
-Explanation:
-This code updates user records in the Lego_Users_Dimension if User_ID exists, otherwise it inserts new user records.
-Dummy Information:
+This query performs an upsert to update or insert user profile records. When matched, it updates the User_ID, Set_Name, and Set_Num fields if there are differences. If no match is found, a new record is inserted.
 
-Table: Lego_Users_Dimension
-Columns: User_ID, User_Dim_Key
+Table: Rebrickable_Profile_Dimension
+Columns: User_ID, List_ID, Set_Name, Set_Num, Date_Added
+
+<br>
+
+![rebrickable_profile](images/rebrickable_profile.png)
+
+<br>
+
 ##### 3.1.3 Inserting into Lego_Date_Dimension
 The Lego_Date_Dimension table stores date-related information, typically used to track transactions in the fact table.
 ```python 
@@ -144,6 +151,7 @@ The following images show the populated data in the Lego_Date_Dimension.
 <br>
 
 ![date_dimension](images/date_dimension.png)
+
 <br>
 
 #### 3.2 Inserting into the Fact Table: Owned_Sets_Fact
