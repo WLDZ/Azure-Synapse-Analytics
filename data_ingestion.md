@@ -2,7 +2,7 @@
 
 ## Table of Contents
 
-1. [Solution](#solution)  
+1. [Overview](#Overview)  
 2. [Pipeline Overview](#pipeline-overview)  
    2.0 - [Pipeline Steps](#pipeline-steps)  
    2.1 - [Retrieve API Key (Get Key)](#21-retrieve-api-key-get-key)  
@@ -27,7 +27,7 @@
 
 ---
 
-## Solution
+## Overview
 
 The overall solution is divided into three parts:
 
